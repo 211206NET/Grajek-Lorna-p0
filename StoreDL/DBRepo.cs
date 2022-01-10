@@ -118,6 +118,26 @@ public class DBRepo : IRepo
         }
         return allProducts;
     }
+    public List<Product> GetAllCentauriProducts()
+    {
+        List<Product> allProducts = new List<Product>();
+        using SqlConnection connection = new SqlConnection(_connectionString);
+        string prodSelect = "SELECT p.ProductID, p.Name, p.Description, p.Price, i.StoreId, i.Quantity\nFROM Product p\nINNER JOIN Inventory i ON p.ProductID = i.ProductId\n WHERE i.StoreId = 2\nORDER BY p.ProductID";
+        DataSet ProdSet = new DataSet();
+        using SqlDataAdapter prodAdapter = new SqlDataAdapter(prodSelect, connection);
+        prodAdapter.Fill(ProdSet, "Product");
+        DataTable? ProductTable = ProdSet.Tables["Product"];
+        foreach(DataRow row in ProductTable.Rows)
+        {
+            Product prod = new Product();
+            prod.ProductID = (int) row["ProductID"];
+            prod.ProductName = row["Name"].ToString();
+            prod.Description = row["Description"].ToString();
+            prod.Price = (int) row["Price"];
+            allProducts.Add(prod);
+        }
+        return allProducts;
+    }
     public int GetCustomerID(string username)
     {
         int CID = Customer.CId;

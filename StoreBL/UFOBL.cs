@@ -26,6 +26,10 @@ public class UFOBL : IBL
     {
         return _dl.GetAllEarthProducts();
     }
+    public List<Product> GetAllCentauriProducts()
+    {
+        return _dl.GetAllCentauriProducts();
+    }
     public void AddLineItem(LineItem newLI)
     {
         _dl.AddLineItem(newLI);
