@@ -34,6 +34,7 @@ public class CustomerMenu : IMenu
                 {
                     Console.WriteLine($"Order Number: {order.OrderNumber}  Amount: {order.Total}  Date: {order.OrderDate}");
                 }
+                MenuFactory.GetMenu("customer").Start();
             break;
             case "3":
                 MenuFactory.GetMenu("main").Start();

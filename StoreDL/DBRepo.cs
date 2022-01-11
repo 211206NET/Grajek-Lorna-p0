@@ -227,4 +227,12 @@ public class DBRepo : IRepo
             }
         }
     }
+    public Order CreateNewOrder(int custID)
+    {
+        Random rand = new Random();
+        int orderID = rand.Next(1, 500);
+        Order newOrder = new Order();
+        
+        return newOrder;
+    }
 }

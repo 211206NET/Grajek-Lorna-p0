@@ -11,7 +11,7 @@ public class CentauriMenu : IMenu
     {
         Random rand = new Random();
         int orderID = rand.Next(1, 500);
-        LineItem.OrderId = orderID;
+        // LineItem.OrderId = orderID;
         bool exit = false;
         while (!exit)
         {
@@ -64,9 +64,9 @@ public class CentauriMenu : IMenu
                         };
                         List<LineItem> listofLI = new List<LineItem>();
                         listofLI.Add(newLI);
-                        CurrentContext.Cart = new Order{OrderNumber = LineItem.OrderId, StoreId = CurrentContext.currentStore.StoreID, CustomerId = Customer.CId};
-                        CurrentContext.Cart.LineItems.Add(newLI);
-                        // _bl.AddOrder(CurrentContext.Cart);
-                        _bl.AddLineItem(newLI, LineItem.OrderId);
+                        // CurrentContext.Cart = new Order{OrderNumber = LineItem.OrderId, StoreId = CurrentContext.currentStore.StoreID, CustomerId = Customer.CId};
+                        // CurrentContext.Cart.LineItems.Add(newLI);
+                        // // _bl.AddOrder(CurrentContext.Cart);
+                        // _bl.AddLineItem(newLI, LineItem.OrderId);
     }
 }
