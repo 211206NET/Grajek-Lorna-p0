@@ -11,62 +11,82 @@ public class CentauriMenu : IMenu
     {
         Random rand = new Random();
         int orderID = rand.Next(1, 500);
-        // LineItem.OrderId = orderID;
-        bool exit = false;
-        while (!exit)
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("Welcome to Proxima B! What Would you like to do?");
+        Console.ResetColor();
+        Console.WriteLine("[1] View products and place an order");
+        Console.WriteLine("[2] Return to Main Menu");
+        string response = Console.ReadLine();
+        switch (response)
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("Welcome to Proxima B! What Would you like to do?");
-            Console.ResetColor();
-            Console.WriteLine("[1] View products and place an order");
-            Console.WriteLine("[2] Return to Main Menu");
-            string response = Console.ReadLine();
-            
-            switch (response)
-            {
-                case "1":
-                    CreateLineItem();
-                break;
-                case "2":
-                    MenuFactory.GetMenu("store").Start();
-                break;
-                default:
-                    MenuFactory.GetMenu("store").Start();
-                break;
-            }
-        }
-    }
-    public void CreateLineItem()
-    {
-        Console.WriteLine("\nPlease select from the following products: ");
-                        Storefront centauri = CurrentContext.currentStore;
-                        int storeID = CurrentContext.currentStore.StoreID;
-                        List<Product> allProducts = _bl.GetAllCentauriProducts();
+            case "1":
+                bool exit = false;
+                while (!exit)
+                {
+                    Console.WriteLine("\nPlease select from the following products: \n");
+                    Storefront centauri = CurrentContext.currentStore;
+                    int storeID = CurrentContext.currentStore.StoreID;
+                    List<Product> allProducts = _bl.GetAllCentauriProducts();
 
-                        for (int i = 0; i < allProducts.Count; i++)
+                    for (int i = 0; i < allProducts.Count; i++)
+                    {
+                        Console.WriteLine($"\n[{i}] {allProducts[i].ProductName}: \n{allProducts[i].Description}\nPrice:\t${allProducts[i].Price}");
+                    }
+                    
+                    int input = int.Parse(Console.ReadLine());
+                    Product selectedprod = new Product();
+                    selectedprod = allProducts[input];
+                    Console.WriteLine($"How many {selectedprod.ProductName} would you like to buy?");
+                    int input2 = int.Parse(Console.ReadLine());
+                    int prodID = selectedprod.ProductID;
+                    LineItem newLI = new LineItem
+                    {
+                        Item = selectedprod,
+                        Quantity = input2,
+                        ProductID = selectedprod.ProductID,
+                        OrderId = orderID
+                    };
+
+                    if(CurrentContext.lineItems == null)
+                    {
+                        CurrentContext.lineItems = new List<LineItem>();
+                    }
+                    CurrentContext.lineItems.Add(newLI);
+                    
+                    if(CurrentContext.Cart == null)
+                    {
+                        //They are adding item to the cart for the first time
+
+                        Order newOrder = new Order{OrderNumber = orderID, StoreId = CurrentContext.currentStore.StoreID, CustomerId = Customer.CId};
+                        CurrentContext.Cart = newOrder;
+                    }
+                    Console.WriteLine("Keep Shopping or Place Order?");
+                    Console.WriteLine("[1] Keep Shopping!\t[2] Place Order");
+                    int shopInput = Int32.Parse(Console.ReadLine());
+                    
+                    if (shopInput == 1)
+                    {
+
+                    } 
+                    else
+                    {
+                        _bl.AddOrder(CurrentContext.Cart);
+                        foreach (LineItem item in CurrentContext.lineItems)
                         {
-                            Console.WriteLine($"[{i}] {allProducts[i].ProductName}: \n{allProducts[i].Description}\nPrice:\t{allProducts[i].Price}");
+                            _bl.AddLineItem(item, orderID);
                         }
-
-                        int input = int.Parse(Console.ReadLine());
-                        Product selectedprod = new Product();
-                        selectedprod = allProducts[input];
-
-                        Console.WriteLine($"How many {selectedprod.ProductName} would you like to buy?");
-                        int input2 = int.Parse(Console.ReadLine());
-
-                        int prodID = selectedprod.ProductID;
-                        LineItem newLI = new LineItem
-                        {
-                            Item = selectedprod,
-                            Quantity = input2,
-                            ProductID = selectedprod.ProductID
-                        };
-                        List<LineItem> listofLI = new List<LineItem>();
-                        listofLI.Add(newLI);
-                        // CurrentContext.Cart = new Order{OrderNumber = LineItem.OrderId, StoreId = CurrentContext.currentStore.StoreID, CustomerId = Customer.CId};
-                        // CurrentContext.Cart.LineItems.Add(newLI);
-                        // // _bl.AddOrder(CurrentContext.Cart);
-                        // _bl.AddLineItem(newLI, LineItem.OrderId);
+                        System.Console.WriteLine("Thank you for placing your order! You can find your order details in your customer account.");
+                        exit = true;
+                    }
+                }
+                MenuFactory.GetMenu("customer").Start();
+            break;
+            case "2":
+                MenuFactory.GetMenu("customer").Start();
+            break;
+            default:
+                MenuFactory.GetMenu("store").Start();
+            break;
+        }
     }
 }
