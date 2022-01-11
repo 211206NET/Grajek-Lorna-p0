@@ -25,7 +25,7 @@ public class MainMenu : IMenu
                 switch (input)
                 {
                     case "1":
-                        MenuFactory.GetMenu("customer").Start();
+                        MenuFactory.GetMenu("login").Start();
                     break;
                     case "2":
                         Console.WriteLine("Greetings! What is your Earth name?");

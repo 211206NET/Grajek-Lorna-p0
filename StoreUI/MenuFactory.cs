@@ -14,6 +14,9 @@ public static class MenuFactory
             case "main":
                 return new MainMenu(bl);
             
+            case "login":
+                return new LoginMenu(bl);
+
             case "customer":
                 return new CustomerMenu(bl);
             

@@ -138,6 +138,35 @@ public class DBRepo : IRepo
         }
         return allProducts;
     }
+    public List<Order> GetAllOrders(int CID)
+    {
+        CID = Customer.CId;
+        List<Order> allOrders = new List<Order>();
+        using(SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            string queryTxt = $"SELECT * FROM Orders WHERE CustomerId = {CID}";
+            using(SqlCommand cmd = new SqlCommand(queryTxt, connection))
+            {
+                using(SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Order order = new Order();
+                        order.OrderNumber = reader.GetInt32(0);
+                        CID = reader.GetInt32(1);
+                        order.StoreId = reader.GetInt32(2);
+                        order.Total = reader.GetInt32(3);
+                        order.OrderDate = reader.GetDateTime(4);
+
+                        allOrders.Add(order);
+                    }
+                }
+            }
+            connection.Close();
+        }
+        return allOrders;
+    }
     public int GetCustomerID(string username)
     {
         int CID = Customer.CId;
@@ -160,7 +189,7 @@ public class DBRepo : IRepo
         }
         return CID;
     }
-    public void AddLineItem(LineItem newLI)
+    public void AddLineItem(LineItem newLI, int orderID)
     {
         using(SqlConnection connection = new SqlConnection(_connectionString))
         {
@@ -169,7 +198,7 @@ public class DBRepo : IRepo
             using(SqlCommand cmd = new SqlCommand(sqlCmd, connection))
             {
                 cmd.Parameters.Add(new SqlParameter("@p1", newLI.ProductID));
-                cmd.Parameters.Add(new SqlParameter("@p2", newLI.OrderId));
+                cmd.Parameters.Add(new SqlParameter("@p2", orderID));
                 cmd.Parameters.Add(new SqlParameter("@p3", newLI.Quantity));
                 cmd.ExecuteNonQuery();
             }

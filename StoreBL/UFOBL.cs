@@ -30,9 +30,9 @@ public class UFOBL : IBL
     {
         return _dl.GetAllCentauriProducts();
     }
-    public void AddLineItem(LineItem newLI)
+    public void AddLineItem(LineItem newLI, int orderID)
     {
-        _dl.AddLineItem(newLI);
+        _dl.AddLineItem(newLI, orderID);
     }
     public void AddStore(Storefront storetoAdd)
     {
@@ -41,6 +41,10 @@ public class UFOBL : IBL
     public void AddOrder(Order orderToAdd)
     {
         _dl.AddOrder(orderToAdd);
+    }
+    public List<Order> GetAllOrders(int CID)
+    {
+        return _dl.GetAllOrders(CID);
     }
     public int GetCustomerID(string username)
     {

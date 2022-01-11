@@ -19,13 +19,13 @@ public class ManagerMenu : IMenu
         Console.WriteLine("[1] Add a new location");
         Console.WriteLine("[2] View all locations");
         Console.WriteLine("[3] Return to main menu");
-        string? input = Console.ReadLine();
+        string input = Console.ReadLine();
 
         switch (input)
         {
             case "1":
                 Console.WriteLine("\nStore Name: ");
-                string? name = Console.ReadLine();
+                string name = Console.ReadLine();
                 Console.WriteLine("\nStore Address: ");
                 string address = Console.ReadLine();
                 Random rand = new Random();

@@ -8,11 +8,10 @@ public class LineItem
         this.ProductID = ProductID;
         this.Item = item;
         this.Quantity = quantity;
-        this.OrderId = orderid;
     }
 
     public Product Item { get; set; }
-    public int OrderId { get; set; }
+    public static int OrderId { get; set; }
     public int Quantity { get; set; }
     public int ProductID { get; set; }
     

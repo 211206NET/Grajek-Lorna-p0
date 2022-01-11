@@ -1,10 +1,10 @@
 namespace UI;
 
-public class CustomerMenu : IMenu
+public class LoginMenu : IMenu
 {
     private IBL _bl;
 
-    public CustomerMenu(IBL bl)
+    public LoginMenu(IBL bl)
     {
         _bl = bl;
     }
@@ -30,7 +30,7 @@ public class CustomerMenu : IMenu
         {
             CurrentContext.currentCustomer = returnCustomer;
             Console.WriteLine($"Welcome back, {returnCustomer.UserName}! ID: {Customer.CId}");
-            MenuFactory.GetMenu("store").Start();
+            MenuFactory.GetMenu("customer").Start();
         }
         else
         {
