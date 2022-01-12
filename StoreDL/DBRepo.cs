@@ -13,6 +13,10 @@ public class DBRepo : IRepo
     {
         _connectionString = connectionString;
     }
+    /// <summary>
+    /// Adds A new Customer to the database
+    /// </summary>
+    /// <param name="newCustomer">The new customer signing up</param>
     public void AddCustomer(Customer newCustomer)
     {
         int CID = Customer.CId;
@@ -46,6 +50,10 @@ public class DBRepo : IRepo
             connection.Close();
         }
     }
+    /// <summary>
+    /// Gets a list of every customer that has signed up
+    /// </summary>
+    /// <returns>a list of all customers</returns>
     public List<Customer> GetAllCustomers()
     {
         int CID = Customer.CId;
@@ -99,6 +107,10 @@ public class DBRepo : IRepo
         }
         return allStores;
     }
+    /// <summary>
+    /// Finds all the products in the database that are associated with a certain StoreId
+    /// </summary>
+    /// <returns>a list of all the products in the Earth Store</returns>
     public List<Product> GetAllEarthProducts()
     {
         List<Product> allProducts = new List<Product>();
@@ -139,6 +151,11 @@ public class DBRepo : IRepo
         }
         return allProducts;
     }
+    /// <summary>
+    /// Finds all the orders ever placed by a single person
+    /// </summary>
+    /// <param name="CID">The CustomerID of the current user</param>
+    /// <returns>all orders placed by that user</returns>
     public List<Order> GetAllOrders(int CID)
     {
         CID = Customer.CId;
@@ -168,6 +185,11 @@ public class DBRepo : IRepo
         }
         return allOrders;
     }
+    /// <summary>
+    /// Finds the randomly generated customerID for the currently logged in user
+    /// </summary>
+    /// <param name="username">searches based on the username</param>
+    /// <returns>an integer customerID</returns>
     public int GetCustomerID(string username)
     {
         int CID = Customer.CId;
@@ -190,6 +212,11 @@ public class DBRepo : IRepo
         }
         return CID;
     }
+    /// <summary>
+    /// When a product is selected to order, it is added as a line, each line item is added to an order
+    /// </summary>
+    /// <param name="newLI">the currently selected product</param>
+    /// <param name="orderID">The order number that this instance of purchasing belongs to</param>
     public void AddLineItem(LineItem newLI, int orderID)
     {
         using(SqlConnection connection = new SqlConnection(_connectionString))
@@ -207,6 +234,10 @@ public class DBRepo : IRepo
             Log.Information("LineItem added {ProductID}{OrderID}{quantity}", newLI.ProductID,newLI.OrderId,newLI.Quantity);
         }
     }
+    /// <summary>
+    /// Adds a completed order to the database
+    /// </summary>
+    /// <param name="orderToAdd">The current order</param>
     public void AddOrder(Order orderToAdd)
     {
         DataSet OrderSet = new DataSet();
@@ -285,6 +316,10 @@ public class DBRepo : IRepo
         }
         return centauriInventory;
     }
+    /// <summary>
+    /// Adds a new product to the database
+    /// </summary>
+    /// <param name="productToAdd">the new product you want to add</param>
     public void AddProduct(Product productToAdd)
     {
         using(SqlConnection connection = new SqlConnection(_connectionString))
@@ -347,13 +382,44 @@ public class DBRepo : IRepo
             connection.Close();
         }
     }
-    public List<Order> GetAllOrders()
+    /// <summary>
+    /// Finds all orders ever placed at a single store
+    /// </summary>
+    /// <returns>list of all orders, ordered by total price</returns>
+    public List<Order> GetAllEarthOrders()
     {
         List<Order> allOrders = new List<Order>();
         using(SqlConnection connection = new SqlConnection(_connectionString))
         {
             connection.Open();
             string queryTxt = $"SELECT * FROM Orders WHERE StoreId = 1 ORDER BY Total DESC";
+            using(SqlCommand cmd = new SqlCommand(queryTxt, connection))
+            {
+                using(SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Order order = new Order();
+                        order.OrderNumber = reader.GetInt32(0);
+                        order.CustomerId = reader.GetInt32(1);
+                        order.Total = reader.GetInt32(3);
+                        order.OrderDate = reader.GetDateTime(4);
+
+                        allOrders.Add(order);
+                    }
+                }
+            }
+            connection.Close();
+        }
+        return allOrders;
+    }
+    public List<Order> GetAllCentauriOrders()
+    {
+        List<Order> allOrders = new List<Order>();
+        using(SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            string queryTxt = $"SELECT * FROM Orders WHERE StoreId = 2 ORDER BY Total DESC";
             using(SqlCommand cmd = new SqlCommand(queryTxt, connection))
             {
                 using(SqlDataReader reader = cmd.ExecuteReader())

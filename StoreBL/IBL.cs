@@ -16,7 +16,8 @@ public interface IBL
     void AddProduct(Product productToAdd);
     void RemoveProduct(int prodID);
     void RestockEarthInventory(int prodID, int quantity);
-    List<Order> GetAllOrders();
+    List<Order> GetAllEarthOrders();
+    List<Order> GetAllCentauriOrders();
     List<Inventory> GetCentauriInventory();
     void RestockCentauriInventory(int prodID, int quantity);
 

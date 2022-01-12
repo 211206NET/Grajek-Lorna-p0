@@ -114,7 +114,7 @@ public class EditCentauri : IMenu
             break;
             case "3":
                 System.Console.WriteLine("View Order History For Area 51: ");
-                List<Order> allOrders = _bl.GetAllOrders();
+                List<Order> allOrders = _bl.GetAllCentauriOrders();
                 foreach (Order o in allOrders)
                 {
                     System.Console.WriteLine($"Customer ID: {o.CustomerId} Order Number: {o.OrderNumber} Total: {o.Total} Date: {o.OrderDate}");
