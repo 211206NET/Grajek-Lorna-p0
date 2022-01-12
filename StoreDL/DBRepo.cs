@@ -212,6 +212,28 @@ public class DBRepo : IRepo
         }
         return CID;
     }
+    public int GetProductID(string productname)
+    {
+        int prodID = 0;
+        Product currProd = new Product();
+        using SqlConnection connection = new SqlConnection(_connectionString);
+        {
+            connection.Open();
+            string queryTxt = $"SELECT ProductID FROM Product WHERE Name = '{productname}'";
+            using(SqlCommand cmd = new SqlCommand(queryTxt, connection))
+            {
+                using(SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        prodID = reader.GetInt32(0);
+                    }
+                }
+            }
+            connection.Close();
+        }
+        return prodID;
+    }
     /// <summary>
     /// When a product is selected to order, it is added as a line, each line item is added to an order
     /// </summary>
@@ -335,6 +357,24 @@ public class DBRepo : IRepo
             }
             connection.Close();
             Log.Information("Product added {name}{description}{price}", productToAdd.ProductName,productToAdd.Description,productToAdd.Price);
+        }
+    }
+    public void AddProductToInventory(int prodID, Inventory inventToAdd)
+    {
+        Inventory invent = new Inventory();
+        using(SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            string sqlCmd = "INSERT INTO Inventory (StoreId, ProductId, Quantity) VALUES (@p1, @p2, @p3)";
+            using(SqlCommand cmd = new SqlCommand(sqlCmd, connection))
+            {
+                cmd.Parameters.Add(new SqlParameter("@p1", inventToAdd.StoreId));
+                cmd.Parameters.Add(new SqlParameter("@p2", prodID));
+                cmd.Parameters.Add(new SqlParameter("@p3", inventToAdd.Quantity));
+                cmd.ExecuteNonQuery();
+            }
+            connection.Close();
+            Log.Information("Inventory added {StoreId}{ProductId}{Quantity}", inventToAdd.StoreId,prodID,inventToAdd.Quantity);
         }
     }
     public void RemoveProduct(int prodID)

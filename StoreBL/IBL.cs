@@ -20,5 +20,7 @@ public interface IBL
     List<Order> GetAllCentauriOrders();
     List<Inventory> GetCentauriInventory();
     void RestockCentauriInventory(int prodID, int quantity);
+    int GetProductID(string productname);
+    void AddProductToInventory(int prodID, Inventory inventToAdd);
 
 }

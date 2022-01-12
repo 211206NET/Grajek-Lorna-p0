@@ -82,5 +82,13 @@ public class UFOBL : IBL
     {
         _dl.RestockCentauriInventory(prodID, quantity);
     }
+    public int GetProductID(string productname)
+    {
+        return _dl.GetProductID(productname);
+    }
+    public void AddProductToInventory(int prodID, Inventory inventToAdd)
+    {
+        _dl.AddProductToInventory(prodID, inventToAdd);
+    }
 
 }

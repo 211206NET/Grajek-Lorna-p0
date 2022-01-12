@@ -17,7 +17,7 @@ public class MainMenu : IMenu
         while (!exit)
         {
             Console.WriteLine("Please Select from the Following: ");
-            Console.WriteLine("[1] Log-in \t[2] Sign-Up");
+            Console.WriteLine("[1] Log-in \t[2] Sign-Up\t[3] Exit");
             string input = Console.ReadLine();
 
             if(!string.IsNullOrWhiteSpace(input))
@@ -49,6 +49,9 @@ public class MainMenu : IMenu
                         //launch manager functions
                         Console.WriteLine("Initialize Admin Mode ");
                         MenuFactory.GetMenu("manager").Start();
+                    break;
+                    case "3":
+                        Environment.Exit(3);
                     break;
                 }
             }
