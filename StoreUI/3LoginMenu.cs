@@ -29,7 +29,7 @@ public class LoginMenu : IMenu
         if (ifUsername && ifPassword)
         {
             CurrentContext.currentCustomer = returnCustomer;
-            Console.WriteLine($"Welcome back, {returnCustomer.UserName}! ID: {Customer.CId}");
+            Console.WriteLine($"Welcome back, {returnCustomer.UserName}!");
             MenuFactory.GetMenu("customer").Start();
         }
         else

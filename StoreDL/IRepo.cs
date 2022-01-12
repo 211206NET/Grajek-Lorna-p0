@@ -18,4 +18,7 @@ public interface IRepo
     void AddProduct(Product productToAdd);
     void RemoveProduct(int prodID);
     void RestockEarthInventory(int prodID, int quantity);
+    List<Order> GetAllOrders();
+    List<Inventory> GetCentauriInventory();
+    void RestockCentauriInventory(int prodID, int quantity);
 }

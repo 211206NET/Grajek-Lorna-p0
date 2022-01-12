@@ -32,7 +32,7 @@ public class CustomerMenu : IMenu
                 Console.WriteLine($"Order History for Customer #{ID}");
                 foreach (Order order in allOrders)
                 {
-                    Console.WriteLine($"Order Number: {order.OrderNumber}  Amount: {order.Total}  Date: {order.OrderDate.ToString("en-us")}");
+                    Console.WriteLine($"Order Number: {order.OrderNumber}  Amount: {order.Total}  Date: {order.OrderDate}");
                 }
                 MenuFactory.GetMenu("customer").Start();
             break;

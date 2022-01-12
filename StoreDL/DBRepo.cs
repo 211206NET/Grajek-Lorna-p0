@@ -1,9 +1,10 @@
-namespace StoreDL;
-
 using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
 using Models;
 using System.Data;
+using Serilog;
+namespace StoreDL;
+
 
 public class DBRepo : IRepo
 {
@@ -203,6 +204,7 @@ public class DBRepo : IRepo
                 cmd.ExecuteNonQuery();
             }
             connection.Close();
+            Log.Information("LineItem added {ProductID}{OrderID}{quantity}", newLI.ProductID,newLI.OrderId,newLI.Quantity);
         }
     }
     public void AddOrder(Order orderToAdd)
@@ -224,6 +226,8 @@ public class DBRepo : IRepo
                 SqlCommandBuilder cmdBuilder = new SqlCommandBuilder(dataAdapter);
                 dataAdapter.InsertCommand = cmdBuilder.GetInsertCommand();
                 dataAdapter.Update(orderTable);
+                // dataAdapter.Insert(orderTable);
+                Log.Information("Order added {OrderId}{CustomerId}{StoreId}{Total}{OrderDate}", orderToAdd.OrderNumber,orderToAdd.CustomerId,orderToAdd.StoreId,orderToAdd.Total,orderToAdd.OrderDate);
             }
         }
     }
@@ -254,6 +258,33 @@ public class DBRepo : IRepo
         }
         return earthInventory;
     }
+    
+    public List<Inventory> GetCentauriInventory()
+    {
+        List<Inventory> centauriInventory = new List<Inventory>();
+        using(SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            string queryTxt = "SELECT * FROM Inventory WHERE StoreId = 2";
+            using(SqlCommand cmd = new SqlCommand(queryTxt, connection))
+            {
+                using(SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Inventory centauri = new Inventory();
+                        centauri.InventoryID = reader.GetInt32(0);
+                        centauri.StoreId = reader.GetInt32(1);
+                        centauri.ProductID = reader.GetInt32(2);
+                        centauri.Quantity = reader.GetInt32(3);
+                        centauriInventory.Add(centauri);
+                    }
+                }
+            }
+            connection.Close();
+        }
+        return centauriInventory;
+    }
     public void AddProduct(Product productToAdd)
     {
         using(SqlConnection connection = new SqlConnection(_connectionString))
@@ -268,6 +299,7 @@ public class DBRepo : IRepo
                 cmd.ExecuteNonQuery();
             }
             connection.Close();
+            Log.Information("Product added {name}{description}{price}", productToAdd.ProductName,productToAdd.Description,productToAdd.Price);
         }
     }
     public void RemoveProduct(int prodID)
@@ -300,4 +332,47 @@ public class DBRepo : IRepo
             connection.Close();
         }
     }
+        public void RestockCentauriInventory(int prodID, int quantity)
+    {
+        using(SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            string sqlCmd = "UPDATE Inventory SET Quantity = @p0 WHERE ProductId = @p1";
+            using(SqlCommand cmd = new SqlCommand(sqlCmd, connection))
+            {
+                cmd.Parameters.AddWithValue("@p0", quantity);
+                cmd.Parameters.AddWithValue("@p1", prodID);
+                cmd.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
+    }
+    public List<Order> GetAllOrders()
+    {
+        List<Order> allOrders = new List<Order>();
+        using(SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            string queryTxt = $"SELECT * FROM Orders WHERE StoreId = 1 ORDER BY Total DESC";
+            using(SqlCommand cmd = new SqlCommand(queryTxt, connection))
+            {
+                using(SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Order order = new Order();
+                        order.OrderNumber = reader.GetInt32(0);
+                        order.CustomerId = reader.GetInt32(1);
+                        order.Total = reader.GetInt32(3);
+                        order.OrderDate = reader.GetDateTime(4);
+
+                        allOrders.Add(order);
+                    }
+                }
+            }
+            connection.Close();
+        }
+        return allOrders;
+    }
+
 }

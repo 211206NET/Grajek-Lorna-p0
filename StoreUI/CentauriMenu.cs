@@ -90,6 +90,8 @@ public class CentauriMenu : IMenu
                             _bl.AddLineItem(item, orderID);
                         }
                         System.Console.WriteLine("Thank you for placing your order! You can find your order details in your customer account.");
+                        Order clearCart = new Order();
+                        CurrentContext.Cart = clearCart;
                         exit = true;
                     }
                 }

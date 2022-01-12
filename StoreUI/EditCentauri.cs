@@ -1,15 +1,15 @@
 namespace UI;
-public class EditEarth : IMenu
+public class EditCentauri : IMenu
 {
     private IBL _bl;
-    public EditEarth(IBL bl)
+    public EditCentauri(IBL bl)
     {
         _bl = bl;
     }
     public void Start()
     {
-        Console.ForegroundColor = ConsoleColor.Green;
-        System.Console.WriteLine("========= Earth ========");
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        System.Console.WriteLine("========= Alpha Centauri ========");
         Console.ResetColor();
         System.Console.WriteLine("What would you like to do?");
         System.Console.WriteLine("[1] View All Product Inventory");
@@ -17,9 +17,9 @@ public class EditEarth : IMenu
         System.Console.WriteLine("[3] View Order History");
         System.Console.WriteLine("[4] Return to Admin Menu");
 
-        Storefront earth = CurrentContext.currentStore;
-        List<Product> allProducts = _bl.GetAllEarthProducts();
-        List<Inventory> allInventory = _bl.GetEarthInventory();
+        Storefront centauri = CurrentContext.currentStore;
+        List<Product> allProducts = _bl.GetAllCentauriProducts();
+        List<Inventory> allInventory = _bl.GetCentauriInventory();
         var prodInventory = allProducts.Zip(allInventory, (p, i) => new {Product = p, Inventory = i});
         switch (Console.ReadLine())
         {
@@ -65,7 +65,7 @@ public class EditEarth : IMenu
                         }
                         else
                         {
-                            MenuFactory.GetMenu("editearth").Start();
+                            MenuFactory.GetMenu("editcentauri").Start();
                         }
                     break;
                     case "2":
@@ -88,7 +88,7 @@ public class EditEarth : IMenu
                         }
                         else
                         {
-                            MenuFactory.GetMenu("editearth").Start();
+                            MenuFactory.GetMenu("editcentauri").Start();
                         }
                     break;
                     case "3":
@@ -101,7 +101,7 @@ public class EditEarth : IMenu
                         prodID = int.Parse(Console.ReadLine());
                         System.Console.WriteLine("How many items would you like to add?");
                         int quant = int.Parse(Console.ReadLine());
-                        _bl.RestockEarthInventory(prodID, quant);
+                        _bl.RestockCentauriInventory(prodID, quant);
                         foreach (var (item, index) in prodInventory.Select((value, i) => (value, i)))
                         {
                             System.Console.WriteLine($"\n[{item.Product.ProductID}] {item.Product.ProductName}: {item.Product.Description}\nPrice: ${item.Product.Price}\tQuantity: {item.Inventory.Quantity}");

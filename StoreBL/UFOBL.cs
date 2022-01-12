@@ -66,4 +66,17 @@ public class UFOBL : IBL
     {
         _dl.RestockEarthInventory(prodID, quantity);
     }
+    public List<Order> GetAllOrders()
+    {
+        return _dl.GetAllOrders();
+    }
+    public List<Inventory> GetCentauriInventory()
+    {
+        return _dl.GetCentauriInventory();
+    }
+    public void RestockCentauriInventory(int prodID, int quantity)
+    {
+        _dl.RestockCentauriInventory(prodID, quantity);
+    }
+
 }

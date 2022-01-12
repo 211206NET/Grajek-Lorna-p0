@@ -12,16 +12,16 @@ public class StoreMenu : IMenu
         List<Storefront> allStores = _bl.GetAllStores();
         for (int i = 0; i < allStores.Count; i++)
         {
-            Console.WriteLine($"\n[{i + 1}] {allStores[i].Name} located on {allStores[i].Address}");
+            Console.WriteLine($"\n[{i}] {allStores[i].Name} located on {allStores[i].Address}");
         }
         string selection = Console.ReadLine();
         CurrentContext.currentStore = allStores[int.Parse(selection)];
         switch (selection)
         {
-            case "1":
+            case "0":
                 MenuFactory.GetMenu("earth").Start();
             break;
-            case "2":
+            case "1":
                 MenuFactory.GetMenu("centauri").Start();
             break;
             default:

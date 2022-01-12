@@ -52,6 +52,9 @@ public class ManagerMenu : IMenu
                     case "1":
                         MenuFactory.GetMenu("editearth").Start();
                     break;
+                    case "2":
+                        MenuFactory.GetMenu("editcentauri").Start();
+                    break;
                     default:
                     break;
                 }
