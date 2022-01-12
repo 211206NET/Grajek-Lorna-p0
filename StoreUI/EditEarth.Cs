@@ -1,0 +1,119 @@
+namespace UI;
+public class EditEarth : IMenu
+{
+    private IBL _bl;
+    public EditEarth(IBL bl)
+    {
+        _bl = bl;
+    }
+    public void Start()
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        System.Console.WriteLine("========= Earth ========");
+        Console.ResetColor();
+        System.Console.WriteLine("What would you like to do?");
+        System.Console.WriteLine("[1] View All Product Inventory");
+        System.Console.WriteLine("[2] Edit Product Inventory");
+        System.Console.WriteLine("[3] View Order History");
+        System.Console.WriteLine("[4] Return to Admin Menu");
+
+        Storefront earth = CurrentContext.currentStore;
+        List<Product> allProducts = _bl.GetAllEarthProducts();
+        List<Inventory> allInventory = _bl.GetEarthInventory();
+        var prodInventory = allProducts.Zip(allInventory, (p, i) => new {Product = p, Inventory = i});
+        switch (Console.ReadLine())
+        {
+            case "1":
+                foreach (var (item, index) in prodInventory.Select((value, i) => (value, i)))
+                {
+                    System.Console.WriteLine($"\n[{index}] {item.Product.ProductName}: {item.Product.Description}\nPrice: ${item.Product.Price}\tQuantity: {item.Inventory.Quantity}");
+                }
+                System.Console.WriteLine("Press Enter to return to menu");
+                Console.ReadKey();
+                if (Console.ReadKey().Key == ConsoleKey.Enter)
+                {
+                    MenuFactory.GetMenu("editearth").Start();
+                }
+            break;
+            case "2":
+                System.Console.WriteLine("[1] Add New Product \n[2] Delete Product\n[3] Replenish Inventory");
+
+                switch (Console.ReadLine())
+                {
+                    case "1":
+                        System.Console.WriteLine("Product Name: ");
+                        string name = Console.ReadLine();
+                        System.Console.WriteLine("Product Description: ");
+                        string describe = Console.ReadLine();
+                        System.Console.WriteLine("Price: "); 
+                        decimal price = decimal.Parse(Console.ReadLine());
+                        
+                        Product newProd = new Product{
+                            ProductName = name,
+                            Description = describe,
+                            Price = price
+                        };
+                        _bl.AddProduct(newProd);
+                        System.Console.WriteLine($"{newProd.ProductName} has been added!\n[1] View New Inventory\n[2] Go Back");
+                        int choice = int.Parse(Console.ReadLine());
+                        if(choice == 1)
+                        {
+                            foreach (var (item, index) in prodInventory.Select((value, i) => (value, i)))
+                            {
+                                System.Console.WriteLine($"\n[{index}] {item.Product.ProductName}: {item.Product.Description}\nPrice: ${item.Product.Price}\tQuantity: {item.Inventory.Quantity}");
+                            }
+                        }
+                        else
+                        {
+                            MenuFactory.GetMenu("editearth").Start();
+                        }
+                    break;
+                    case "2":
+                        System.Console.WriteLine("Select a product to remove: ");
+                        foreach (var (item, index) in prodInventory.Select((value, i) => (value, i)))
+                        {
+                            System.Console.WriteLine($"\n[{item.Product.ProductID}] {item.Product.ProductName}");
+                        }
+                        int prodID = int.Parse(Console.ReadLine());
+                        _bl.RemoveProduct(prodID);
+                        System.Console.WriteLine("Your product has been deleted!");
+                        System.Console.WriteLine("[1] View New Inventory\n[2] Go Back");
+                        int choice1 = int.Parse(Console.ReadLine());
+                        if(choice1 == 1)
+                        {
+                            foreach (var (item, index) in prodInventory.Select((value, i) => (value, i)))
+                            {
+                                System.Console.WriteLine($"\n[{index}] {item.Product.ProductName}: {item.Product.Description}\nPrice: ${item.Product.Price}\tQuantity: {item.Inventory.Quantity}");
+                            }
+                        }
+                        else
+                        {
+                            MenuFactory.GetMenu("editearth").Start();
+                        }
+                    break;
+                    case "3":
+                        System.Console.WriteLine("Replenish Inventory: ");
+                        System.Console.WriteLine("Select which item you would like to restock: ");
+                        foreach (var (item, index) in prodInventory.Select((value, i) => (value, i)))
+                        {
+                            System.Console.WriteLine($"\n[{item.Product.ProductID}] {item.Product.ProductName}: {item.Product.Description}\nPrice: ${item.Product.Price}\tQuantity: {item.Inventory.Quantity}");
+                        }
+                        prodID = int.Parse(Console.ReadLine());
+                        System.Console.WriteLine("How many items would you like to add?");
+                        int quant = int.Parse(Console.ReadLine());
+                        _bl.RestockEarthInventory(prodID, quant);
+                        foreach (var (item, index) in prodInventory.Select((value, i) => (value, i)))
+                        {
+                            System.Console.WriteLine($"\n[{item.Product.ProductID}] {item.Product.ProductName}: {item.Product.Description}\nPrice: ${item.Product.Price}\tQuantity: {item.Inventory.Quantity}");
+                        }
+                    break;
+                    default:
+                    break;
+                }
+
+            break;
+            default:
+            break;
+        }
+    }
+}

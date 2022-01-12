@@ -31,6 +31,9 @@ public static class MenuFactory
 
             case "manager":
                 return new ManagerMenu(bl);
+            
+            case "editearth":
+                return new EditEarth(bl);
 
             default:
                 return new MainMenu(bl);

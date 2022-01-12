@@ -50,4 +50,20 @@ public class UFOBL : IBL
     {
         return _dl.GetCustomerID(username);
     }
+    public List<Inventory> GetEarthInventory()
+    {
+        return _dl.GetEarthInventory();
+    }
+    public void AddProduct(Product productToAdd)
+    {
+        _dl.AddProduct(productToAdd);
+    }
+    public void RemoveProduct(int prodID)
+    {
+        _dl.RemoveProduct(prodID);
+    }
+    public void RestockEarthInventory(int prodID, int quantity)
+    {
+        _dl.RestockEarthInventory(prodID, quantity);
+    }
 }

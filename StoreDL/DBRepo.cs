@@ -106,7 +106,7 @@ public class DBRepo : IRepo
         DataSet ProdSet = new DataSet();
         using SqlDataAdapter prodAdapter = new SqlDataAdapter(prodSelect, connection);
         prodAdapter.Fill(ProdSet, "Product");
-        DataTable? ProductTable = ProdSet.Tables["Product"];
+        DataTable ?ProductTable = ProdSet.Tables["Product"];
         foreach(DataRow row in ProductTable.Rows)
         {
             Product prod = new Product();
@@ -126,7 +126,7 @@ public class DBRepo : IRepo
         DataSet ProdSet = new DataSet();
         using SqlDataAdapter prodAdapter = new SqlDataAdapter(prodSelect, connection);
         prodAdapter.Fill(ProdSet, "Product");
-        DataTable? ProductTable = ProdSet.Tables["Product"];
+        DataTable ?ProductTable = ProdSet.Tables["Product"];
         foreach(DataRow row in ProductTable.Rows)
         {
             Product prod = new Product();
@@ -214,7 +214,7 @@ public class DBRepo : IRepo
             using(SqlDataAdapter dataAdapter = new SqlDataAdapter(selectCmd, connection))
             {
                 dataAdapter.Fill(OrderSet, "Orders");
-                DataTable orderTable = OrderSet.Tables["Orders"];
+                DataTable ?orderTable = OrderSet.Tables["Orders"];
                 DataRow newRow = orderTable.NewRow();
                 orderToAdd.ToDataRow(ref newRow);
 
@@ -227,12 +227,77 @@ public class DBRepo : IRepo
             }
         }
     }
-    public Order CreateNewOrder(int custID)
+    public List<Inventory> GetEarthInventory()
     {
-        Random rand = new Random();
-        int orderID = rand.Next(1, 500);
-        Order newOrder = new Order();
-        
-        return newOrder;
+        List<Inventory> earthInventory = new List<Inventory>();
+        using(SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            string queryTxt = "SELECT * FROM Inventory WHERE StoreId = 1";
+            using(SqlCommand cmd = new SqlCommand(queryTxt, connection))
+            {
+                using(SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Inventory earth = new Inventory();
+                        earth.InventoryID = reader.GetInt32(0);
+                        earth.StoreId = reader.GetInt32(1);
+                        earth.ProductID = reader.GetInt32(2);
+                        earth.Quantity = reader.GetInt32(3);
+
+                        earthInventory.Add(earth);
+                    }
+                }
+            }
+            connection.Close();
+        }
+        return earthInventory;
+    }
+    public void AddProduct(Product productToAdd)
+    {
+        using(SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            string sqlCmd = "INSERT INTO Product (Name, Description, Price) VALUES (@p1, @p2, @p3)";
+            using(SqlCommand cmd = new SqlCommand(sqlCmd, connection))
+            {
+                cmd.Parameters.Add(new SqlParameter("@p1", productToAdd.ProductName));
+                cmd.Parameters.Add(new SqlParameter("@p2", productToAdd.Description));
+                cmd.Parameters.Add(new SqlParameter("@p3", productToAdd.Price));
+                cmd.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
+    }
+    public void RemoveProduct(int prodID)
+    {
+        using(SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            string sqlCmd = "DELETE FROM Product WHERE ProductID = @p1";
+            using(SqlCommand cmd = new SqlCommand(sqlCmd, connection))
+            {
+                cmd.Parameters.Add(new SqlParameter("@p1", prodID));
+                
+                cmd.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
+    }
+    public void RestockEarthInventory(int prodID, int quantity)
+    {
+        using(SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            string sqlCmd = "UPDATE Inventory SET Quantity = @p0 WHERE ProductId = @p1";
+            using(SqlCommand cmd = new SqlCommand(sqlCmd, connection))
+            {
+                cmd.Parameters.AddWithValue("@p0", quantity);
+                cmd.Parameters.AddWithValue("@p1", prodID);
+                cmd.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
     }
 }

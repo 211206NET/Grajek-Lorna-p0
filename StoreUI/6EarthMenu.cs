@@ -25,6 +25,7 @@ public class EarthMenu : IMenu
                 while (!exit)
                 {
                     Console.WriteLine("\nPlease select from the following products: \n");
+                    DateTime date = DateTime.Now;
                     Storefront earth = CurrentContext.currentStore;
                     int storeID = CurrentContext.currentStore.StoreID;
                     List<Product> allProducts = _bl.GetAllEarthProducts();
@@ -60,6 +61,7 @@ public class EarthMenu : IMenu
                         
                         Order newOrder = new Order
                         {
+                            OrderDate = date,
                             OrderNumber = orderID, 
                             StoreId = CurrentContext.currentStore.StoreID, 
                             CustomerId = Customer.CId,

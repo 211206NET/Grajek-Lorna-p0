@@ -24,7 +24,8 @@ public class CentauriMenu : IMenu
                 while (!exit)
                 {
                     Console.WriteLine("\nPlease select from the following products: \n");
-                    Storefront centauri = CurrentContext.currentStore;
+                    DateTime date = DateTime.Now;
+                    Storefront centarui = CurrentContext.currentStore;
                     int storeID = CurrentContext.currentStore.StoreID;
                     List<Product> allProducts = _bl.GetAllCentauriProducts();
 
@@ -32,7 +33,7 @@ public class CentauriMenu : IMenu
                     {
                         Console.WriteLine($"\n[{i}] {allProducts[i].ProductName}: \n{allProducts[i].Description}\nPrice:\t${allProducts[i].Price}");
                     }
-                    
+
                     int input = int.Parse(Console.ReadLine());
                     Product selectedprod = new Product();
                     selectedprod = allProducts[input];
@@ -52,14 +53,27 @@ public class CentauriMenu : IMenu
                         CurrentContext.lineItems = new List<LineItem>();
                     }
                     CurrentContext.lineItems.Add(newLI);
-                    
+                    decimal currTotal = CurrentContext.CalculateTotal();
+                    // int orderTotal = int.Parse(CurrentContext.Cart.LineItems.Sum());
                     if(CurrentContext.Cart == null)
                     {
-                        //They are adding item to the cart for the first time
-
-                        Order newOrder = new Order{OrderNumber = orderID, StoreId = CurrentContext.currentStore.StoreID, CustomerId = Customer.CId};
+                        
+                        Order newOrder = new Order
+                        {
+                            OrderDate = date,
+                            OrderNumber = orderID, 
+                            StoreId = CurrentContext.currentStore.StoreID, 
+                            CustomerId = Customer.CId,
+                            Total = currTotal
+                        };
                         CurrentContext.Cart = newOrder;
                     }
+                    else if(CurrentContext.Cart != null)
+                    {
+                        CurrentContext.Cart.Total += currTotal;
+                    }
+                    else
+                    {}
                     Console.WriteLine("Keep Shopping or Place Order?");
                     Console.WriteLine("[1] Keep Shopping!\t[2] Place Order");
                     int shopInput = Int32.Parse(Console.ReadLine());
