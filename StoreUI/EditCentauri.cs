@@ -92,20 +92,35 @@ public class EditCentauri : IMenu
                         }
                     break;
                     case "3":
-                        System.Console.WriteLine("Replenish Inventory: ");
-                        System.Console.WriteLine("Select which item you would like to restock: ");
-                        foreach (var (item, index) in prodInventory.Select((value, i) => (value, i)))
+                        bool exit = false;
+                        while (!exit)
                         {
-                            System.Console.WriteLine($"\n[{item.Product.ProductID}] {item.Product.ProductName}: {item.Product.Description}\nPrice: ${item.Product.Price}\tQuantity: {item.Inventory.Quantity}");
-                        }
-                        prodID = int.Parse(Console.ReadLine());
-                        System.Console.WriteLine("How many items would you like to add?");
-                        int quant = int.Parse(Console.ReadLine());
-                        _bl.RestockCentauriInventory(prodID, quant);
-                        foreach (var (item, index) in prodInventory.Select((value, i) => (value, i)))
-                        {
-                            System.Console.WriteLine($"\n[{item.Product.ProductID}] {item.Product.ProductName}: {item.Product.Description}\nPrice: ${item.Product.Price}\tQuantity: {item.Inventory.Quantity}");
-                        }
+                            System.Console.WriteLine("Replenish Inventory: ");
+                            System.Console.WriteLine("Select which item you would like to restock: ");
+                            foreach (var (item, index) in prodInventory.Select((value, i) => (value, i)))
+                            {
+                                System.Console.WriteLine($"\n[{item.Product.ProductID}] {item.Product.ProductName}: {item.Product.Description}\nPrice: ${item.Product.Price}\tQuantity: {item.Inventory.Quantity}");
+                            }
+                            prodID = int.Parse(Console.ReadLine());
+                            System.Console.WriteLine("How many items would you like to add?");
+                            int quant = int.Parse(Console.ReadLine());
+                            _bl.RestockCentauriInventory(prodID, quant);
+                            System.Console.WriteLine("\n[1] Change more inventory\n[2] Go Back to Main Menu");
+                            string response =Console.ReadLine();
+                            if (int.Parse(response) == 1)
+                            {
+                                
+                            }
+                            else if (int.Parse(response) == 2)
+                            {
+                                MenuFactory.GetMenu("editcentauri").Start();
+                            }
+                            else if (string.IsNullOrEmpty(response));
+                            {
+                                System.Console.WriteLine("Invalid Response");
+                                exit = true;
+                            }
+                        }    
                     break;
                     default:
                     break;
@@ -119,8 +134,17 @@ public class EditCentauri : IMenu
                 {
                     System.Console.WriteLine($"Customer ID: {o.CustomerId} Order Number: {o.OrderNumber} Total: {o.Total} Date: {o.OrderDate}");
                 }
+                System.Console.WriteLine("Press Enter to return to Store Menu");
+                if (Console.ReadKey().Key == ConsoleKey.Enter)
+                {
+                    MenuFactory.GetMenu("editearth").Start();
+                }
+            break;
+            case "4":
+                MenuFactory.GetMenu("manager").Start();
             break;
             default:
+                MenuFactory.GetMenu("manager").Start();
             break;
         }
     }

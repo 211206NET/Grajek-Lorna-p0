@@ -9,7 +9,7 @@ public class ManagerMenu : IMenu
     public void Start()
     {
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.WriteLine("=============================");
+        Console.WriteLine("\n=============================");
         Console.ResetColor();
         Console.WriteLine("Admin Mode Inialized");
         Console.ForegroundColor = ConsoleColor.Blue;
@@ -37,6 +37,8 @@ public class ManagerMenu : IMenu
                     Name = name,
                 };
             _bl.AddStore(newStore);
+            System.Console.WriteLine("Store Added!");
+            MenuFactory.GetMenu("manager").Start();
             break;
             case "2":
                 Console.WriteLine("Select a store to see more information: ");
