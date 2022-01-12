@@ -263,7 +263,7 @@ public class DBRepo : IRepo
     public void AddOrder(Order orderToAdd)
     {
         DataSet OrderSet = new DataSet();
-        string selectCmd = "SELECT * FROM Orders WHERE OrderId = -1";
+        string selectCmd = "SELECT * FROM Orders";
         using(SqlConnection connection = new SqlConnection(_connectionString))
         {
             using(SqlDataAdapter dataAdapter = new SqlDataAdapter(selectCmd, connection))
@@ -284,6 +284,25 @@ public class DBRepo : IRepo
             }
         }
     }
+    //     public void AddOrder(Order orderToAdd)
+    // {
+        
+    //     using(SqlConnection connection = new SqlConnection(_connectionString))
+    //     {
+    //         connection.Open();
+    //         string sqlCmd = "INSERT INTO Orders (OrderId, CustomerId, StoreId, Total, OrderDate) VALUES (@p1, @p2, @p3, @p4, @p5)";
+    //         using(SqlCommand cmd = new SqlCommand(sqlCmd, connection))
+    //         {
+    //             cmd.Parameters.Add(new SqlParameter("@p1", orderToAdd.OrderNumber));
+    //             cmd.Parameters.Add(new SqlParameter("@p2", orderToAdd.CustomerId));
+    //             cmd.Parameters.Add(new SqlParameter("@p3", orderToAdd.StoreId));
+    //             cmd.Parameters.Add(new SqlParameter("@p4", orderToAdd.Total));
+    //             cmd.Parameters.Add(new SqlParameter("@p5", orderToAdd.OrderDate));
+    //             cmd.ExecuteNonQuery();
+    //         }
+    //         connection.Close();
+    //     }
+    // }
     public List<Inventory> GetEarthInventory()
     {
         List<Inventory> earthInventory = new List<Inventory>();
