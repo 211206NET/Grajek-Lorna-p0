@@ -32,9 +32,6 @@ public class MainMenu : IMenu
                         string username = Console.ReadLine();
                         Console.WriteLine("Please enter a password: ");
                         string password = Console.ReadLine();
-                        Random rand = new Random();
-                        int custID = rand.Next(1, 1001);
-                        Customer.CId = custID;
                         Customer newCustomer = new Customer
                             {
                                 UserName = username,

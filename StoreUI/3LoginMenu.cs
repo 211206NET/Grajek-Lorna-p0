@@ -11,7 +11,7 @@ public class LoginMenu : IMenu
 
     public void Start()
     {
-        List<Customer> allCustomers = _bl.GetAllCustomers();
+        // List<Customer> allCustomers = _bl.GetAllCustomers();
         Console.WriteLine("Welcome back! Please log in: ");
         Console.WriteLine("Name: ");
         string username = Console.ReadLine();
@@ -24,6 +24,7 @@ public class LoginMenu : IMenu
             };
         int custID = _bl.GetCustomerID(username);
         Customer.CId = custID;
+        List<Customer> allCustomers = _bl.SearchCustomer(username, password);
         bool ifUsername = allCustomers.Exists(x => x.UserName == returnCustomer.UserName);
         bool ifPassword = allCustomers.Exists(x => x.Password == returnCustomer.Password);
         if (ifUsername && ifPassword)

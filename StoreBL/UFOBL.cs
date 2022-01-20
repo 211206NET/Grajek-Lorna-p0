@@ -8,11 +8,14 @@ public class UFOBL : IBL
         _dl = repo;
     }
 
-    public List<Storefront> GetAllStores()
+    public List<Customer> SearchCustomer(string username, string password)
     {
-        return _dl.GetAllStores();
+        return _dl.SearchCustomer(username, password);
     }
-
+    public Customer GetCustomerById(int custId)
+    {
+        return _dl.GetCustomerById(custId);
+    }
     public List<Customer> GetAllCustomers()
     {
         return _dl.GetAllCustomers();
@@ -22,6 +25,11 @@ public class UFOBL : IBL
     {
         _dl.AddCustomer(newCustomer);
     }
+    public List<Storefront> GetAllStores()
+    {
+        return _dl.GetAllStores();
+    }
+
     public List<Product> GetAllEarthProducts()
     {
         return _dl.GetAllEarthProducts();
@@ -45,10 +53,6 @@ public class UFOBL : IBL
     public List<Order> GetAllOrders(int CID)
     {
         return _dl.GetAllOrders(CID);
-    }
-    public int GetCustomerID(string username)
-    {
-        return _dl.GetCustomerID(username);
     }
     public List<Inventory> GetEarthInventory()
     {
@@ -89,6 +93,11 @@ public class UFOBL : IBL
     public void AddProductToInventory(int prodID, Inventory inventToAdd)
     {
         _dl.AddProductToInventory(prodID, inventToAdd);
+    }
+
+    public Storefront GetStorefrontById(int storeID)
+    {
+        return _dl.GetStorefrontById((int)storeID);
     }
 
 }

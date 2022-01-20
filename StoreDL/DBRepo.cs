@@ -13,12 +13,19 @@ public class DBRepo : IRepo
     {
         _connectionString = connectionString;
     }
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
     /// <summary>
     /// Adds A new Customer to the database
     /// </summary>
     /// <param name="newCustomer">The new customer signing up</param>
     public void AddCustomer(Customer newCustomer)
     {
+        Random rand = new Random();
+        int custID = rand.Next(1, 1001);
+        Customer.CId = custID;
         int CID = Customer.CId;
         using(SqlConnection connection = new SqlConnection(_connectionString))
         {
@@ -34,26 +41,25 @@ public class DBRepo : IRepo
             connection.Close();
         }
     }
-    public void AddStore(Storefront storetoAdd)
+    public List<Customer> SearchCustomer(string username, string password)
     {
-        using(SqlConnection connection = new SqlConnection(_connectionString))
+        string searchQuery = $"SELECT * FROM Customer WHERE UserName LIKE '%{username}%' AND PassWord LIKE '%{password}%'";
+
+        using SqlConnection connection = new SqlConnection(_connectionString);
+        using SqlCommand cmd = new SqlCommand(searchQuery, connection);
+        using SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+        DataSet customerSet = new DataSet();
+        adapter.Fill(customerSet, "Customer");
+        DataTable customerTable = customerSet.Tables["Customer"];
+        List<Customer> searchResult = new List<Customer>();
+        foreach(DataRow row in customerTable.Rows)
         {
-            connection.Open();
-            string sqlCmd = "INSERT INTO StoreFront (StoreId, Name, Address) VALUES (@p1, @p2, @p3)";
-            using(SqlCommand cmd = new SqlCommand(sqlCmd, connection))
-            {
-                cmd.Parameters.Add(new SqlParameter("@p1", storetoAdd.StoreID));
-                cmd.Parameters.Add(new SqlParameter("@p2", storetoAdd.Name));
-                cmd.Parameters.Add(new SqlParameter("@p3", storetoAdd.Address));
-                cmd.ExecuteNonQuery();
-            }
-            connection.Close();
+            Customer customer = new Customer(row);
+            searchResult.Add(customer);
         }
+
+        return searchResult;
     }
-    /// <summary>
-    /// Gets a list of every customer that has signed up
-    /// </summary>
-    /// <returns>a list of all customers</returns>
     public List<Customer> GetAllCustomers()
     {
         int CID = Customer.CId;
@@ -81,6 +87,50 @@ public class DBRepo : IRepo
         }
         return allCustomers;
     }
+    public Customer GetCustomerById(int custId)
+    {
+        int CID = Customer.CId;
+        string query = "SELECT * FROM Customer WHERE CustomerId = @custId";
+        using SqlConnection connection = new SqlConnection(_connectionString);
+        connection.Open();
+        using SqlCommand cmd = new SqlCommand(query, connection);
+        SqlParameter param = new SqlParameter("@custId", custId);
+        cmd.Parameters.Add(param);
+        using SqlDataReader reader = cmd.ExecuteReader();
+        Customer customer = new Customer();
+        if (reader.Read())
+        {
+            CID = reader.GetInt32(0);
+            customer.UserName = reader.GetString(1);
+            customer.Password = reader.GetString(2);
+        }
+        connection.Close();
+        return customer;
+    }
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    public void AddStore(Storefront storetoAdd)
+    {
+        using(SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            string sqlCmd = "INSERT INTO StoreFront (StoreId, Name, Address) VALUES (@p1, @p2, @p3)";
+            using(SqlCommand cmd = new SqlCommand(sqlCmd, connection))
+            {
+                cmd.Parameters.Add(new SqlParameter("@p1", storetoAdd.StoreID));
+                cmd.Parameters.Add(new SqlParameter("@p2", storetoAdd.Name));
+                cmd.Parameters.Add(new SqlParameter("@p3", storetoAdd.Address));
+                cmd.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
+    }
+    /// <summary>
+    /// Gets a list of every customer that has signed up
+    /// </summary>
+    /// <returns>a list of all customers</returns>
     public List<Storefront> GetAllStores()
     {
         List<Storefront> allStores = new List<Storefront>();
@@ -190,28 +240,6 @@ public class DBRepo : IRepo
     /// </summary>
     /// <param name="username">searches based on the username</param>
     /// <returns>an integer customerID</returns>
-    public int GetCustomerID(string username)
-    {
-        int CID = Customer.CId;
-        Customer currentCustomer = new Customer();
-        using SqlConnection connection = new SqlConnection(_connectionString);
-        {
-            connection.Open();
-            string queryTxt = $"SELECT CustomerId FROM Customer WHERE UserName = '{username}'";
-            using(SqlCommand cmd = new SqlCommand(queryTxt, connection))
-            {
-                using(SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        CID = reader.GetInt32(0);
-                    }
-                }
-            }
-            connection.Close();
-        }
-        return CID;
-    }
     public int GetProductID(string productname)
     {
         int prodID = 0;
@@ -500,4 +528,23 @@ public class DBRepo : IRepo
         return allOrders;
     }
 
+    public Storefront GetStorefrontById(int storeID)
+    {
+        string query = "SELECT * FROM StoreFront WHERE StoreId = @storeID";  
+        using SqlConnection connection = new SqlConnection(_connectionString);
+        connection.Open();
+        using SqlCommand cmd = new SqlCommand(query, connection);
+        SqlParameter param = new SqlParameter("@storeID", storeID);
+        cmd.Parameters.Add(param);
+        using SqlDataReader reader = cmd.ExecuteReader();
+        Storefront store = new Storefront();
+        if(reader.Read())
+        {
+            store.StoreID = reader.GetInt32(0);
+            store.Name = reader.GetString(1);
+            store.Address = reader.GetString(2);
+        }
+        connection.Close();
+        return store;
+    }
 }
